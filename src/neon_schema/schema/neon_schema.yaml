@@ -1,0 +1,938 @@
+id: https://w3id.org/neon-schema
+name: neon_schema
+title: NEON Data Schema
+description: >-
+  LinkML schema for National Ecological Observatory Network (NEON) data.
+  This schema models NEON's hierarchical data structure including domains,
+  sites, locations, data products, samples, and taxonomic information with
+  cross-links between entities.
+license: MIT
+version: 0.1.0
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  neon: https://w3id.org/neon-schema/
+  schema: http://schema.org/
+  dwc: http://rs.tdwg.org/dwc/terms/
+  wgs84: http://www.w3.org/2003/01/geo/wgs84_pos#
+  dcterms: http://purl.org/dc/terms/
+  orcid: https://orcid.org/
+
+default_prefix: neon
+default_range: string
+
+imports:
+  - linkml:types
+
+# -----------------------------------------------------------------------------
+# Enumerations
+# -----------------------------------------------------------------------------
+
+enums:
+  SiteTypeEnum:
+    description: Type of NEON field site
+    permissible_values:
+      CORE:
+        description: Core sites selected to represent key ecosystem types
+      GRADIENT:
+        description: Gradient sites capturing environmental gradients
+
+  ProductStatusEnum:
+    description: Status of a data product
+    permissible_values:
+      FUTURE:
+        description: Product planned for future release
+      ACTIVE:
+        description: Product currently being collected and released
+      RETIRED:
+        description: Product no longer being collected
+
+  ProductCategoryEnum:
+    description: Data product processing level
+    permissible_values:
+      Level 0:
+        description: Raw data
+      Level 1:
+        description: Quality-controlled data
+      Level 2:
+        description: Derived data products
+      Level 3:
+        description: Highly processed/modeled data
+      Level 4:
+        description: Integrated data products
+
+  TaxonTypeEnum:
+    description: Major taxonomic groupings used by NEON
+    permissible_values:
+      ALGAE:
+        description: Algae taxa
+      BEETLE:
+        description: Beetle taxa (Carabidae)
+      BIRD:
+        description: Bird taxa
+      FISH:
+        description: Fish taxa
+      HERPETOLOGY:
+        description: Reptile and amphibian taxa
+      MACROINVERTEBRATE:
+        description: Aquatic macroinvertebrate taxa
+      MOSQUITO:
+        description: Mosquito taxa
+      MOSQUITO_PATHOGENS:
+        description: Mosquito pathogen taxa
+      PLANT:
+        description: Plant taxa
+      SMALL_MAMMAL:
+        description: Small mammal taxa
+      TICK:
+        description: Tick taxa
+
+  LocationTypeEnum:
+    description: Types of named locations in NEON hierarchy
+    permissible_values:
+      REALM:
+        description: Top-level realm
+      DOMAIN:
+        description: Ecological domain
+      SITE:
+        description: Field site
+      TOWER:
+        description: Instrumented tower
+      PLOT:
+        description: Sampling plot
+      POINT:
+        description: Observation point
+      SENSOR:
+        description: Individual sensor location
+
+  MeasurementSystemEnum:
+    description: NEON measurement system types
+    permissible_values:
+      AOP:
+        description: Airborne Observation Platform
+      AIS:
+        description: Aquatic Instrument System
+      AOS:
+        description: Aquatic Observation System
+      TIS:
+        description: Terrestrial Instrument System
+      TOS:
+        description: Terrestrial Observation System
+
+# -----------------------------------------------------------------------------
+# Types
+# -----------------------------------------------------------------------------
+
+types:
+  DomainCode:
+    typeof: string
+    description: Domain code in format D01-D20
+    pattern: "^D[0-2][0-9]$"
+
+  SiteCode:
+    typeof: string
+    description: Four-character site code
+    pattern: "^[A-Z]{4}$"
+
+  ProductCode:
+    typeof: string
+    description: Data product code in format DPX.XXXXX.XXX
+    pattern: "^DP[0-4]\\.[0-9]{5}\\.[0-9]{3}$"
+
+  YearMonth:
+    typeof: string
+    description: Year-month in YYYY-MM format
+    pattern: "^[0-9]{4}-[0-1][0-9]$"
+
+# -----------------------------------------------------------------------------
+# Classes
+# -----------------------------------------------------------------------------
+
+classes:
+  # ---------------------------------------------------------------------------
+  # Container Class
+  # ---------------------------------------------------------------------------
+
+  NeonDataset:
+    description: Container for a collection of NEON data entities
+    tree_root: true
+    attributes:
+      domains:
+        description: Collection of NEON domains
+        range: Domain
+        multivalued: true
+        inlined_as_list: true
+      sites:
+        description: Collection of NEON field sites
+        range: Site
+        multivalued: true
+        inlined_as_list: true
+      locations:
+        description: Collection of named locations
+        range: Location
+        multivalued: true
+        inlined_as_list: true
+      data_products:
+        description: Collection of data products
+        range: DataProduct
+        multivalued: true
+        inlined_as_list: true
+      releases:
+        description: Collection of data releases
+        range: Release
+        multivalued: true
+        inlined_as_list: true
+      taxa:
+        description: Collection of taxonomic records
+        range: Taxon
+        multivalued: true
+        inlined_as_list: true
+      samples:
+        description: Collection of physical samples
+        range: Sample
+        multivalued: true
+        inlined_as_list: true
+
+  # ---------------------------------------------------------------------------
+  # Geographic/Spatial Classes
+  # ---------------------------------------------------------------------------
+
+  Domain:
+    description: >-
+      A NEON domain representing a distinct eco-climatic region.
+      NEON divides the US into 20 eco-climatic domains.
+    class_uri: schema:Place
+    attributes:
+      domain_code:
+        description: Unique domain identifier (D01-D20)
+        range: DomainCode
+        identifier: true
+        slot_uri: dcterms:identifier
+      domain_name:
+        description: Full name of the domain
+        range: string
+        required: true
+        slot_uri: schema:name
+      description:
+        description: Description of the domain's ecological characteristics
+        range: string
+        slot_uri: schema:description
+      sites:
+        description: Sites within this domain
+        range: Site
+        multivalued: true
+        inlined: false
+
+  Site:
+    description: >-
+      A NEON field site where data collection occurs.
+      Sites are either CORE (representing key ecosystems) or GRADIENT
+      (capturing environmental gradients).
+    class_uri: schema:Place
+    attributes:
+      site_code:
+        description: Four-character unique site identifier
+        range: SiteCode
+        identifier: true
+        slot_uri: dcterms:identifier
+      site_name:
+        description: Full name of the site
+        range: string
+        required: true
+        slot_uri: schema:name
+      site_description:
+        description: Abbreviated site description
+        range: string
+        slot_uri: schema:description
+      site_type:
+        description: Whether site is CORE or GRADIENT
+        range: SiteTypeEnum
+        required: true
+      domain:
+        description: Domain this site belongs to
+        range: Domain
+        required: true
+        inlined: false
+        slot_uri: schema:containedInPlace
+      latitude:
+        description: Site latitude in decimal degrees (WGS84)
+        range: decimal
+        slot_uri: wgs84:lat
+      longitude:
+        description: Site longitude in decimal degrees (WGS84)
+        range: decimal
+        slot_uri: wgs84:long
+      elevation:
+        description: Site elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+      state_code:
+        description: Two-letter US state code
+        range: string
+      state_name:
+        description: Full state name
+        range: string
+      deims_id:
+        description: DEIMS-SDR registry identifier
+        range: string
+      available_data_products:
+        description: Data products available at this site
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      locations:
+        description: Named locations within this site
+        range: Location
+        multivalued: true
+        inlined: false
+
+  Location:
+    description: >-
+      A named location in NEON's hierarchical location system.
+      Locations range from domains to individual sensor positions.
+    class_uri: schema:Place
+    attributes:
+      location_name:
+        description: Unique location name identifier
+        range: string
+        identifier: true
+        slot_uri: dcterms:identifier
+      location_description:
+        description: Description of the location
+        range: string
+        slot_uri: schema:description
+      location_type:
+        description: Type of location in hierarchy
+        range: LocationTypeEnum
+      site:
+        description: Site this location belongs to
+        range: Site
+        inlined: false
+        slot_uri: schema:containedInPlace
+      parent_location:
+        description: Parent location in hierarchy
+        range: Location
+        inlined: false
+      child_locations:
+        description: Child locations in hierarchy
+        range: Location
+        multivalued: true
+        inlined: false
+      latitude:
+        description: Location latitude in decimal degrees (WGS84)
+        range: decimal
+        slot_uri: wgs84:lat
+      longitude:
+        description: Location longitude in decimal degrees (WGS84)
+        range: decimal
+        slot_uri: wgs84:long
+      elevation:
+        description: Location elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+      utm_easting:
+        description: UTM easting coordinate
+        range: decimal
+      utm_northing:
+        description: UTM northing coordinate
+        range: decimal
+      utm_zone:
+        description: UTM zone number
+        range: integer
+      active_periods:
+        description: Time periods when location was active
+        range: TimePeriod
+        multivalued: true
+        inlined_as_list: true
+
+  TimePeriod:
+    description: A time period with start and optional end date
+    class_uri: schema:Schedule
+    attributes:
+      start_date:
+        description: Start date of the period
+        range: date
+        required: true
+        slot_uri: schema:startDate
+      end_date:
+        description: End date of the period (null if ongoing)
+        range: date
+        slot_uri: schema:endDate
+
+  GeoCoordinates:
+    description: Geographic coordinates
+    class_uri: schema:GeoCoordinates
+    attributes:
+      latitude:
+        description: Latitude in decimal degrees
+        range: decimal
+        slot_uri: wgs84:lat
+      longitude:
+        description: Longitude in decimal degrees
+        range: decimal
+        slot_uri: wgs84:long
+      elevation:
+        description: Elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+
+  # ---------------------------------------------------------------------------
+  # Data Product Classes
+  # ---------------------------------------------------------------------------
+
+  DataProduct:
+    description: >-
+      A NEON data product representing a specific type of ecological measurement
+      or observation. Products are identified by codes like DP1.00001.001.
+    class_uri: schema:Dataset
+    attributes:
+      product_code:
+        description: Unique product code (e.g., DP1.00001.001)
+        range: ProductCode
+        identifier: true
+        slot_uri: dcterms:identifier
+      product_name:
+        description: Human-readable product name
+        range: string
+        required: true
+        slot_uri: schema:name
+      product_description:
+        description: Brief description of the product
+        range: string
+        slot_uri: schema:description
+      product_abstract:
+        description: Detailed abstract describing the product
+        range: string
+      product_status:
+        description: Current status of the product
+        range: ProductStatusEnum
+      product_category:
+        description: Processing level category
+        range: ProductCategoryEnum
+      product_has_expanded:
+        description: Whether expanded package is available
+        range: boolean
+      science_team:
+        description: Science team responsible (3-letter abbreviation)
+        range: string
+      measurement_system:
+        description: Measurement system that collects this data
+        range: MeasurementSystemEnum
+      sites:
+        description: Sites where this product is available
+        range: SiteAvailability
+        multivalued: true
+        inlined_as_list: true
+      releases:
+        description: Releases containing this product
+        range: Release
+        multivalued: true
+        inlined: false
+      specifications:
+        description: Associated protocol and specification documents
+        range: ProductSpecification
+        multivalued: true
+        inlined_as_list: true
+      change_logs:
+        description: Issues and changes affecting the data
+        range: ChangeLogEntry
+        multivalued: true
+        inlined_as_list: true
+      keywords:
+        description: Keywords describing the product
+        range: string
+        multivalued: true
+        slot_uri: schema:keywords
+
+  SiteAvailability:
+    description: Availability of a data product at a specific site
+    attributes:
+      site:
+        description: Site where data is available
+        range: Site
+        required: true
+        inlined: false
+      available_months:
+        description: Months when data is available (YYYY-MM format)
+        range: YearMonth
+        multivalued: true
+      data_url:
+        description: URL to access the data
+        range: uri
+        slot_uri: schema:url
+
+  ProductSpecification:
+    description: A specification document associated with a data product
+    attributes:
+      spec_id:
+        description: Unique specification identifier
+        range: string
+        identifier: true
+      spec_description:
+        description: Description of the specification
+        range: string
+      spec_type:
+        description: Type of specification (protocol, user guide, etc.)
+        range: string
+      file_name:
+        description: Name of the specification file
+        range: string
+      file_size:
+        description: File size in bytes
+        range: integer
+      mime_type:
+        description: MIME type of the file
+        range: string
+      url:
+        description: URL to download the specification
+        range: uri
+        slot_uri: schema:url
+
+  ChangeLogEntry:
+    description: A change log entry documenting issues affecting data
+    attributes:
+      issue_id:
+        description: Unique issue identifier
+        range: string
+        identifier: true
+      parent_issue_id:
+        description: Parent issue ID if this is a sub-issue
+        range: string
+      issue:
+        description: Description of the issue
+        range: string
+        required: true
+      resolution:
+        description: How the issue was resolved
+        range: string
+      date_range_start:
+        description: Start of affected date range
+        range: date
+        slot_uri: schema:startDate
+      date_range_end:
+        description: End of affected date range
+        range: date
+        slot_uri: schema:endDate
+      locations_affected:
+        description: Locations affected by this issue
+        range: Location
+        multivalued: true
+        inlined: false
+      created_date:
+        description: When the issue was logged
+        range: datetime
+      resolved_date:
+        description: When the issue was resolved
+        range: datetime
+
+  # ---------------------------------------------------------------------------
+  # Release Classes
+  # ---------------------------------------------------------------------------
+
+  Release:
+    description: >-
+      A NEON data release - a static, citable collection of data files
+      with a DOI for reproducible research.
+    class_uri: schema:DataCatalog
+    attributes:
+      release_tag:
+        description: Release identifier (e.g., RELEASE-2025)
+        range: string
+        identifier: true
+        slot_uri: dcterms:identifier
+      uuid:
+        description: Unique UUID for the release
+        range: string
+      generation_date:
+        description: Date the release was generated
+        range: datetime
+        slot_uri: schema:datePublished
+      doi:
+        description: Digital Object Identifier for citation
+        range: string
+        slot_uri: dcterms:identifier
+      data_products:
+        description: Data products included in this release
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      artifacts:
+        description: Downloadable files associated with release
+        range: ReleaseArtifact
+        multivalued: true
+        inlined_as_list: true
+      description:
+        description: Description of the release
+        range: string
+        slot_uri: schema:description
+
+  ReleaseArtifact:
+    description: A downloadable artifact (file) in a release
+    attributes:
+      name:
+        description: File name
+        range: string
+        required: true
+        slot_uri: schema:name
+      artifact_type:
+        description: Type of artifact
+        range: string
+      file_size:
+        description: File size in bytes
+        range: integer
+      md5_checksum:
+        description: MD5 hash for integrity verification
+        range: string
+      url:
+        description: Download URL
+        range: uri
+        slot_uri: schema:url
+
+  # ---------------------------------------------------------------------------
+  # Data File Classes
+  # ---------------------------------------------------------------------------
+
+  DataFile:
+    description: An individual data file within a data product
+    class_uri: schema:DataDownload
+    attributes:
+      file_name:
+        description: Name of the data file
+        range: string
+        identifier: true
+        slot_uri: schema:name
+      data_product:
+        description: Data product this file belongs to
+        range: DataProduct
+        required: true
+        inlined: false
+      site:
+        description: Site the data was collected at
+        range: Site
+        required: true
+        inlined: false
+      year_month:
+        description: Month of data collection (YYYY-MM)
+        range: YearMonth
+        required: true
+      release:
+        description: Release this file is part of
+        range: Release
+        inlined: false
+      file_size:
+        description: File size in bytes
+        range: integer
+      url:
+        description: Download URL (may expire)
+        range: uri
+        slot_uri: schema:url
+      md5_checksum:
+        description: MD5 hash for integrity verification
+        range: string
+      crc32_checksum:
+        description: CRC32 checksum
+        range: string
+      crc32c_checksum:
+        description: CRC32C checksum
+        range: string
+      package_type:
+        description: Package type (basic or expanded)
+        range: string
+
+  # ---------------------------------------------------------------------------
+  # Sample Classes
+  # ---------------------------------------------------------------------------
+
+  Sample:
+    description: >-
+      A physical sample collected by NEON, tracked through the
+      Sample Management System (SMS).
+    class_uri: dwc:MaterialSample
+    attributes:
+      sample_uuid:
+        description: Unique UUID for the sample
+        range: string
+        identifier: true
+        slot_uri: dwc:materialSampleID
+      sample_tag:
+        description: Sample tag identifier
+        range: string
+      sample_class:
+        description: Sample class (ingest table + ID field)
+        range: string
+      barcode:
+        description: Sample barcode
+        range: string
+      archive_guid:
+        description: Globally unique archive identifier
+        range: string
+      site:
+        description: Site where sample was collected
+        range: Site
+        inlined: false
+        slot_uri: dwc:locationID
+      location:
+        description: Specific location where sample was collected
+        range: Location
+        inlined: false
+      collection_date:
+        description: Date sample was collected
+        range: date
+        slot_uri: dwc:eventDate
+      taxon:
+        description: Taxonomic identification of sample (if biological)
+        range: Taxon
+        inlined: false
+        slot_uri: dwc:taxonID
+      parent_samples:
+        description: Parent sample(s) this was derived from
+        range: Sample
+        multivalued: true
+        inlined: false
+      child_samples:
+        description: Child samples derived from this sample
+        range: Sample
+        multivalued: true
+        inlined: false
+      data_product:
+        description: Data product this sample is associated with
+        range: DataProduct
+        inlined: false
+      sample_events:
+        description: Custody and processing events
+        range: SampleEvent
+        multivalued: true
+        inlined_as_list: true
+
+  SampleEvent:
+    description: A custody or processing event for a sample
+    attributes:
+      event_id:
+        description: Unique event identifier
+        range: string
+        identifier: true
+      event_date:
+        description: Date of the event
+        range: datetime
+        slot_uri: schema:startDate
+      ingest_table_name:
+        description: Name of the data ingest table
+        range: string
+      field_entries:
+        description: Field name/value pairs from the event
+        range: FieldEntry
+        multivalued: true
+        inlined_as_list: true
+
+  FieldEntry:
+    description: A field name/value pair from a sample event
+    attributes:
+      field_name:
+        description: Name of the field
+        range: string
+        required: true
+      field_value:
+        description: Value of the field
+        range: string
+
+  # ---------------------------------------------------------------------------
+  # Taxonomy Classes
+  # ---------------------------------------------------------------------------
+
+  Taxon:
+    description: >-
+      A taxonomic record from NEON's taxon lists, following Darwin Core standards.
+      Taxa are compiled from published sources for field staff verification.
+    class_uri: dwc:Taxon
+    attributes:
+      taxon_id:
+        description: Unique taxon identifier
+        range: string
+        identifier: true
+        slot_uri: dwc:taxonID
+      accepted_taxon_id:
+        description: ID of accepted taxon if this is a synonym
+        range: string
+        slot_uri: dwc:acceptedNameUsageID
+      taxon_type:
+        description: Major taxonomic grouping (BIRD, PLANT, etc.)
+        range: TaxonTypeEnum
+        required: true
+      scientific_name:
+        description: Full scientific name
+        range: string
+        required: true
+        slot_uri: dwc:scientificName
+      scientific_name_authorship:
+        description: Authorship of the scientific name
+        range: string
+        slot_uri: dwc:scientificNameAuthorship
+      vernacular_name:
+        description: Common name
+        range: string
+        slot_uri: dwc:vernacularName
+      taxon_rank:
+        description: Taxonomic rank (species, genus, etc.)
+        range: string
+        slot_uri: dwc:taxonRank
+      kingdom:
+        description: Kingdom classification
+        range: string
+        slot_uri: dwc:kingdom
+      phylum:
+        description: Phylum classification
+        range: string
+        slot_uri: dwc:phylum
+      class_name:
+        description: Class classification
+        range: string
+        slot_uri: dwc:class
+      order:
+        description: Order classification
+        range: string
+        slot_uri: dwc:order
+      family:
+        description: Family classification
+        range: string
+        slot_uri: dwc:family
+      genus:
+        description: Genus classification
+        range: string
+        slot_uri: dwc:genus
+      species:
+        description: Species epithet
+        range: string
+        slot_uri: dwc:specificEpithet
+      subspecies:
+        description: Subspecies epithet
+        range: string
+        slot_uri: dwc:infraspecificEpithet
+      gbif_rank:
+        description: GBIF vocabulary rank for subspecific taxa
+        range: string
+      native_status_code:
+        description: Native/introduced status codes by region
+        range: string
+      update_date:
+        description: Date of last taxonomic update
+        range: date
+        slot_uri: dcterms:modified
+
+  # ---------------------------------------------------------------------------
+  # Observation/Measurement Classes
+  # ---------------------------------------------------------------------------
+
+  Observation:
+    description: >-
+      A generic observation or measurement record from NEON.
+      This is a base class for specific observation types.
+    class_uri: schema:Observation
+    attributes:
+      observation_id:
+        description: Unique observation identifier
+        range: string
+        identifier: true
+        slot_uri: dcterms:identifier
+      site:
+        description: Site where observation was made
+        range: Site
+        required: true
+        inlined: false
+        slot_uri: dwc:locationID
+      location:
+        description: Specific location of observation
+        range: Location
+        inlined: false
+      data_product:
+        description: Data product this observation belongs to
+        range: DataProduct
+        required: true
+        inlined: false
+      observation_datetime:
+        description: Date and time of observation
+        range: datetime
+        required: true
+        slot_uri: dwc:eventDate
+      release:
+        description: Release this observation is from
+        range: Release
+        inlined: false
+
+  BiologicalObservation:
+    description: An observation of a biological organism
+    is_a: Observation
+    attributes:
+      taxon:
+        description: Taxonomic identification
+        range: Taxon
+        inlined: false
+        slot_uri: dwc:taxonID
+      individual_count:
+        description: Number of individuals observed
+        range: integer
+        slot_uri: dwc:individualCount
+      occurrence_status:
+        description: Presence/absence status
+        range: string
+        slot_uri: dwc:occurrenceStatus
+      sample:
+        description: Associated sample if collected
+        range: Sample
+        inlined: false
+
+  EnvironmentalObservation:
+    description: An environmental or instrumental measurement
+    is_a: Observation
+    attributes:
+      measured_property:
+        description: Property being measured
+        range: string
+        required: true
+      measurement_value:
+        description: Numeric value of measurement
+        range: decimal
+      measurement_unit:
+        description: Unit of measurement
+        range: string
+      quality_flag:
+        description: Data quality flag
+        range: string
+      sensor_location:
+        description: Location of the sensor
+        range: Location
+        inlined: false
+
+  # ---------------------------------------------------------------------------
+  # Biorepository Classes
+  # ---------------------------------------------------------------------------
+
+  BiorepositoryCollection:
+    description: A collection of samples held in a biorepository
+    attributes:
+      collection_code:
+        description: Unique collection code
+        range: string
+        identifier: true
+        slot_uri: dcterms:identifier
+      collection_name:
+        description: Name of the collection
+        range: string
+        required: true
+        slot_uri: schema:name
+      collection_url:
+        description: URL for the collection
+        range: uri
+        slot_uri: schema:url
+      data_products:
+        description: Data products associated with this collection
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      samples:
+        description: Samples in this collection
+        range: Sample
+        multivalued: true
+        inlined: false
