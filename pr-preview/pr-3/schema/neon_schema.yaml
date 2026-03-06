@@ -1,0 +1,3456 @@
+name: neon_schema
+description: LinkML schema for National Ecological Observatory Network (NEON) data.
+  This schema models NEON's hierarchical data structure including domains, sites,
+  locations, data products, samples, and taxonomic information with cross-links between
+  entities.
+title: NEON Data Schema
+id: https://w3id.org/neon-schema
+version: 0.1.0
+imports:
+- linkml:types
+license: MIT
+prefixes:
+  linkml:
+    prefix_prefix: linkml
+    prefix_reference: https://w3id.org/linkml/
+  neon:
+    prefix_prefix: neon
+    prefix_reference: https://w3id.org/neon-schema/
+  schema:
+    prefix_prefix: schema
+    prefix_reference: http://schema.org/
+  dwc:
+    prefix_prefix: dwc
+    prefix_reference: http://rs.tdwg.org/dwc/terms/
+  wgs84:
+    prefix_prefix: wgs84
+    prefix_reference: http://www.w3.org/2003/01/geo/wgs84_pos#
+  dcterms:
+    prefix_prefix: dcterms
+    prefix_reference: http://purl.org/dc/terms/
+  orcid:
+    prefix_prefix: orcid
+    prefix_reference: https://orcid.org/
+default_prefix: neon
+default_range: string
+types:
+  DomainCode:
+    name: DomainCode
+    definition_uri: https://w3id.org/neon-schema/DomainCode
+    description: Domain code in format D01-D20
+    from_schema: https://w3id.org/neon-schema
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^D[0-2][0-9]$
+  SiteCode:
+    name: SiteCode
+    definition_uri: https://w3id.org/neon-schema/SiteCode
+    description: Four-character site code
+    from_schema: https://w3id.org/neon-schema
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[A-Z]{4}$
+  ProductCode:
+    name: ProductCode
+    definition_uri: https://w3id.org/neon-schema/ProductCode
+    description: Data product code in format DPX.XXXXX.XXX
+    from_schema: https://w3id.org/neon-schema
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^DP[0-4]\.[0-9]{5}\.[0-9]{3}$
+  YearMonth:
+    name: YearMonth
+    definition_uri: https://w3id.org/neon-schema/YearMonth
+    description: Year-month in YYYY-MM format
+    from_schema: https://w3id.org/neon-schema
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[0-9]{4}-[0-1][0-9]$
+  string:
+    name: string
+    definition_uri: https://w3id.org/linkml/String
+    description: A character string
+    notes:
+    - In RDF serializations, a slot with range of string is treated as a literal or
+      type xsd:string.   If you are authoring schemas in LinkML YAML, the type is
+      referenced with the lower case "string".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Text
+    base: str
+    uri: xsd:string
+  integer:
+    name: integer
+    definition_uri: https://w3id.org/linkml/Integer
+    description: An integer
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "integer".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Integer
+    base: int
+    uri: xsd:integer
+  boolean:
+    name: boolean
+    definition_uri: https://w3id.org/linkml/Boolean
+    description: A binary (true or false) value
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "boolean".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Boolean
+    base: Bool
+    uri: xsd:boolean
+    repr: bool
+  float:
+    name: float
+    definition_uri: https://w3id.org/linkml/Float
+    description: A real number that conforms to the xsd:float specification
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "float".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Float
+    base: float
+    uri: xsd:float
+  double:
+    name: double
+    definition_uri: https://w3id.org/linkml/Double
+    description: A real number that conforms to the xsd:double specification
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "double".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    close_mappings:
+    - schema:Float
+    base: float
+    uri: xsd:double
+  decimal:
+    name: decimal
+    definition_uri: https://w3id.org/linkml/Decimal
+    description: A real number with arbitrary precision that conforms to the xsd:decimal
+      specification
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "decimal".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    broad_mappings:
+    - schema:Number
+    base: Decimal
+    uri: xsd:decimal
+  time:
+    name: time
+    definition_uri: https://w3id.org/linkml/Time
+    description: A time object represents a (local) time of day, independent of any
+      particular day
+    notes:
+    - URI is dateTime because OWL reasoners do not work with straight date or time
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "time".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Time
+    base: XSDTime
+    uri: xsd:time
+    repr: str
+  date:
+    name: date
+    definition_uri: https://w3id.org/linkml/Date
+    description: a date (year, month and day) in an idealized calendar
+    notes:
+    - URI is dateTime because OWL reasoners don't work with straight date or time
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "date".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:Date
+    base: XSDDate
+    uri: xsd:date
+    repr: str
+  datetime:
+    name: datetime
+    definition_uri: https://w3id.org/linkml/Datetime
+    description: The combination of a date and time
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "datetime".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    exact_mappings:
+    - schema:DateTime
+    base: XSDDateTime
+    uri: xsd:dateTime
+    repr: str
+  date_or_datetime:
+    name: date_or_datetime
+    definition_uri: https://w3id.org/linkml/DateOrDatetime
+    description: Either a date or a datetime
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "date_or_datetime".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: str
+    uri: linkml:DateOrDatetime
+    repr: str
+  uriorcurie:
+    name: uriorcurie
+    definition_uri: https://w3id.org/linkml/Uriorcurie
+    description: a URI or a CURIE
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "uriorcurie".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: URIorCURIE
+    uri: xsd:anyURI
+    repr: str
+  curie:
+    name: curie
+    definition_uri: https://w3id.org/linkml/Curie
+    conforms_to: https://www.w3.org/TR/curie/
+    description: a compact URI
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "curie".
+    comments:
+    - in RDF serializations this MUST be expanded to a URI
+    - in non-RDF serializations MAY be serialized as the compact representation
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: Curie
+    uri: xsd:string
+    repr: str
+  uri:
+    name: uri
+    definition_uri: https://w3id.org/linkml/Uri
+    conforms_to: https://www.ietf.org/rfc/rfc3987.txt
+    description: a complete URI
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "uri".
+    comments:
+    - in RDF serializations a slot with range of uri is treated as a literal or type
+      xsd:anyURI unless it is an identifier or a reference to an identifier, in which
+      case it is translated directly to a node
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    close_mappings:
+    - schema:URL
+    base: URI
+    uri: xsd:anyURI
+    repr: str
+  ncname:
+    name: ncname
+    definition_uri: https://w3id.org/linkml/Ncname
+    description: Prefix part of CURIE
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "ncname".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: NCName
+    uri: xsd:string
+    repr: str
+  objectidentifier:
+    name: objectidentifier
+    definition_uri: https://w3id.org/linkml/Objectidentifier
+    description: A URI or CURIE that represents an object in the model.
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "objectidentifier".
+    comments:
+    - Used for inheritance and type checking
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: ElementIdentifier
+    uri: shex:iri
+    repr: str
+  nodeidentifier:
+    name: nodeidentifier
+    definition_uri: https://w3id.org/linkml/Nodeidentifier
+    description: A URI, CURIE or BNODE that represents a node in a model.
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "nodeidentifier".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: NodeIdentifier
+    uri: shex:nonLiteral
+    repr: str
+  jsonpointer:
+    name: jsonpointer
+    definition_uri: https://w3id.org/linkml/Jsonpointer
+    conforms_to: https://datatracker.ietf.org/doc/html/rfc6901
+    description: A string encoding a JSON Pointer. The value of the string MUST conform
+      to JSON Point syntax and SHOULD dereference to a valid object within the current
+      instance document when encoded in tree form.
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "jsonpointer".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: str
+    uri: xsd:string
+    repr: str
+  jsonpath:
+    name: jsonpath
+    definition_uri: https://w3id.org/linkml/Jsonpath
+    conforms_to: https://www.ietf.org/archive/id/draft-goessner-dispatch-jsonpath-00.html
+    description: A string encoding a JSON Path. The value of the string MUST conform
+      to JSON Point syntax and SHOULD dereference to zero or more valid objects within
+      the current instance document when encoded in tree form.
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "jsonpath".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: str
+    uri: xsd:string
+    repr: str
+  sparqlpath:
+    name: sparqlpath
+    definition_uri: https://w3id.org/linkml/Sparqlpath
+    conforms_to: https://www.w3.org/TR/sparql11-query/#propertypaths
+    description: A string encoding a SPARQL Property Path. The value of the string
+      MUST conform to SPARQL syntax and SHOULD dereference to zero or more valid objects
+      within the current instance document when encoded as RDF.
+    notes:
+    - If you are authoring schemas in LinkML YAML, the type is referenced with the
+      lower case "sparqlpath".
+    from_schema: https://w3id.org/linkml/types
+    imported_from: linkml:types
+    base: str
+    uri: xsd:string
+    repr: str
+enums:
+  SiteTypeEnum:
+    name: SiteTypeEnum
+    definition_uri: https://w3id.org/neon-schema/SiteTypeEnum
+    description: Type of NEON field site
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      CORE:
+        text: CORE
+        description: Core sites selected to represent key ecosystem types
+      GRADIENT:
+        text: GRADIENT
+        description: Gradient sites capturing environmental gradients
+  ProductStatusEnum:
+    name: ProductStatusEnum
+    definition_uri: https://w3id.org/neon-schema/ProductStatusEnum
+    description: Status of a data product
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      FUTURE:
+        text: FUTURE
+        description: Product planned for future release
+      ACTIVE:
+        text: ACTIVE
+        description: Product currently being collected and released
+      RETIRED:
+        text: RETIRED
+        description: Product no longer being collected
+  ProductCategoryEnum:
+    name: ProductCategoryEnum
+    definition_uri: https://w3id.org/neon-schema/ProductCategoryEnum
+    description: Data product processing level
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      Level 0:
+        text: Level 0
+        description: Raw data
+      Level 1:
+        text: Level 1
+        description: Quality-controlled data
+      Level 2:
+        text: Level 2
+        description: Derived data products
+      Level 3:
+        text: Level 3
+        description: Highly processed/modeled data
+      Level 4:
+        text: Level 4
+        description: Integrated data products
+  TaxonTypeEnum:
+    name: TaxonTypeEnum
+    definition_uri: https://w3id.org/neon-schema/TaxonTypeEnum
+    description: Major taxonomic groupings used by NEON
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      ALGAE:
+        text: ALGAE
+        description: Algae taxa
+      BEETLE:
+        text: BEETLE
+        description: Beetle taxa (Carabidae)
+      BIRD:
+        text: BIRD
+        description: Bird taxa
+      FISH:
+        text: FISH
+        description: Fish taxa
+      HERPETOLOGY:
+        text: HERPETOLOGY
+        description: Reptile and amphibian taxa
+      MACROINVERTEBRATE:
+        text: MACROINVERTEBRATE
+        description: Aquatic macroinvertebrate taxa
+      MOSQUITO:
+        text: MOSQUITO
+        description: Mosquito taxa
+      MOSQUITO_PATHOGENS:
+        text: MOSQUITO_PATHOGENS
+        description: Mosquito pathogen taxa
+      PLANT:
+        text: PLANT
+        description: Plant taxa
+      SMALL_MAMMAL:
+        text: SMALL_MAMMAL
+        description: Small mammal taxa
+      TICK:
+        text: TICK
+        description: Tick taxa
+  LocationTypeEnum:
+    name: LocationTypeEnum
+    definition_uri: https://w3id.org/neon-schema/LocationTypeEnum
+    description: Types of named locations in NEON hierarchy
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      REALM:
+        text: REALM
+        description: Top-level realm
+      DOMAIN:
+        text: DOMAIN
+        description: Ecological domain
+      SITE:
+        text: SITE
+        description: Field site
+      TOWER:
+        text: TOWER
+        description: Instrumented tower
+      PLOT:
+        text: PLOT
+        description: Sampling plot
+      POINT:
+        text: POINT
+        description: Observation point
+      SENSOR:
+        text: SENSOR
+        description: Individual sensor location
+  MeasurementSystemEnum:
+    name: MeasurementSystemEnum
+    definition_uri: https://w3id.org/neon-schema/MeasurementSystemEnum
+    description: NEON measurement system types
+    from_schema: https://w3id.org/neon-schema
+    permissible_values:
+      AOP:
+        text: AOP
+        description: Airborne Observation Platform
+      AIS:
+        text: AIS
+        description: Aquatic Instrument System
+      AOS:
+        text: AOS
+        description: Aquatic Observation System
+      TIS:
+        text: TIS
+        description: Terrestrial Instrument System
+      TOS:
+        text: TOS
+        description: Terrestrial Observation System
+slots:
+  neonDataset__domains:
+    name: neonDataset__domains
+    description: Collection of NEON domains
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:domains
+    alias: domains
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Domain
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__sites:
+    name: neonDataset__sites
+    description: Collection of NEON field sites
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sites
+    alias: sites
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Site
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__locations:
+    name: neonDataset__locations
+    description: Collection of named locations
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:locations
+    alias: locations
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Location
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__data_products:
+    name: neonDataset__data_products
+    description: Collection of data products
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_products
+    alias: data_products
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: DataProduct
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__releases:
+    name: neonDataset__releases
+    description: Collection of data releases
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:releases
+    alias: releases
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Release
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__taxa:
+    name: neonDataset__taxa
+    description: Collection of taxonomic records
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:taxa
+    alias: taxa
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Taxon
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  neonDataset__samples:
+    name: neonDataset__samples
+    description: Collection of physical samples
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:samples
+    alias: samples
+    owner: NeonDataset
+    domain_of:
+    - NeonDataset
+    range: Sample
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  domain__domain_code:
+    name: domain__domain_code
+    description: Unique domain identifier (D01-D20)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: domain_code
+    owner: Domain
+    domain_of:
+    - Domain
+    range: DomainCode
+    required: true
+  domain__domain_name:
+    name: domain__domain_name
+    description: Full name of the domain
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    alias: domain_name
+    owner: Domain
+    domain_of:
+    - Domain
+    range: string
+    required: true
+  domain__description:
+    name: domain__description
+    description: Description of the domain's ecological characteristics
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:description
+    slot_uri: schema:description
+    alias: description
+    owner: Domain
+    domain_of:
+    - Domain
+    range: string
+  domain__sites:
+    name: domain__sites
+    description: Sites within this domain
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sites
+    alias: sites
+    owner: Domain
+    domain_of:
+    - Domain
+    range: Site
+    multivalued: true
+    inlined: false
+  site__site_code:
+    name: site__site_code
+    description: Four-character unique site identifier
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: site_code
+    owner: Site
+    domain_of:
+    - Site
+    range: SiteCode
+    required: true
+  site__site_name:
+    name: site__site_name
+    description: Full name of the site
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    alias: site_name
+    owner: Site
+    domain_of:
+    - Site
+    range: string
+    required: true
+  site__site_description:
+    name: site__site_description
+    description: Abbreviated site description
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:description
+    slot_uri: schema:description
+    alias: site_description
+    owner: Site
+    domain_of:
+    - Site
+    range: string
+  site__site_type:
+    name: site__site_type
+    description: Whether site is CORE or GRADIENT
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:site_type
+    alias: site_type
+    owner: Site
+    domain_of:
+    - Site
+    range: SiteTypeEnum
+    required: true
+  site__domain:
+    name: site__domain
+    description: Domain this site belongs to
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:containedInPlace
+    slot_uri: schema:containedInPlace
+    alias: domain
+    owner: Site
+    domain_of:
+    - Site
+    range: Domain
+    required: true
+    inlined: false
+  site__latitude:
+    name: site__latitude
+    description: Site latitude in decimal degrees (WGS84)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:lat
+    slot_uri: wgs84:lat
+    alias: latitude
+    owner: Site
+    domain_of:
+    - Site
+    range: decimal
+  site__longitude:
+    name: site__longitude
+    description: Site longitude in decimal degrees (WGS84)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:long
+    slot_uri: wgs84:long
+    alias: longitude
+    owner: Site
+    domain_of:
+    - Site
+    range: decimal
+  site__elevation:
+    name: site__elevation
+    description: Site elevation in meters
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:elevation
+    alias: elevation
+    owner: Site
+    domain_of:
+    - Site
+    range: decimal
+    unit:
+      ucum_code: m
+  site__state_code:
+    name: site__state_code
+    description: Two-letter US state code
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:state_code
+    alias: state_code
+    owner: Site
+    domain_of:
+    - Site
+    range: string
+  site__state_name:
+    name: site__state_name
+    description: Full state name
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:state_name
+    alias: state_name
+    owner: Site
+    domain_of:
+    - Site
+    range: string
+  site__deims_id:
+    name: site__deims_id
+    description: DEIMS-SDR registry identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:deims_id
+    alias: deims_id
+    owner: Site
+    domain_of:
+    - Site
+    range: string
+  site__available_data_products:
+    name: site__available_data_products
+    description: Data products available at this site
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:available_data_products
+    alias: available_data_products
+    owner: Site
+    domain_of:
+    - Site
+    range: DataProduct
+    multivalued: true
+    inlined: false
+  site__locations:
+    name: site__locations
+    description: Named locations within this site
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:locations
+    alias: locations
+    owner: Site
+    domain_of:
+    - Site
+    range: Location
+    multivalued: true
+    inlined: false
+  location__location_name:
+    name: location__location_name
+    description: Unique location name identifier
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: location_name
+    owner: Location
+    domain_of:
+    - Location
+    range: string
+    required: true
+  location__location_description:
+    name: location__location_description
+    description: Description of the location
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:description
+    slot_uri: schema:description
+    alias: location_description
+    owner: Location
+    domain_of:
+    - Location
+    range: string
+  location__location_type:
+    name: location__location_type
+    description: Type of location in hierarchy
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:location_type
+    alias: location_type
+    owner: Location
+    domain_of:
+    - Location
+    range: LocationTypeEnum
+  location__site:
+    name: location__site
+    description: Site this location belongs to
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:containedInPlace
+    slot_uri: schema:containedInPlace
+    alias: site
+    owner: Location
+    domain_of:
+    - Location
+    range: Site
+    inlined: false
+  location__parent_location:
+    name: location__parent_location
+    description: Parent location in hierarchy
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:parent_location
+    alias: parent_location
+    owner: Location
+    domain_of:
+    - Location
+    range: Location
+    inlined: false
+  location__child_locations:
+    name: location__child_locations
+    description: Child locations in hierarchy
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:child_locations
+    alias: child_locations
+    owner: Location
+    domain_of:
+    - Location
+    range: Location
+    multivalued: true
+    inlined: false
+  location__latitude:
+    name: location__latitude
+    description: Location latitude in decimal degrees (WGS84)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:lat
+    slot_uri: wgs84:lat
+    alias: latitude
+    owner: Location
+    domain_of:
+    - Location
+    range: decimal
+  location__longitude:
+    name: location__longitude
+    description: Location longitude in decimal degrees (WGS84)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:long
+    slot_uri: wgs84:long
+    alias: longitude
+    owner: Location
+    domain_of:
+    - Location
+    range: decimal
+  location__elevation:
+    name: location__elevation
+    description: Location elevation in meters
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:elevation
+    alias: elevation
+    owner: Location
+    domain_of:
+    - Location
+    range: decimal
+    unit:
+      ucum_code: m
+  location__utm_easting:
+    name: location__utm_easting
+    description: UTM easting coordinate
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:utm_easting
+    alias: utm_easting
+    owner: Location
+    domain_of:
+    - Location
+    range: decimal
+  location__utm_northing:
+    name: location__utm_northing
+    description: UTM northing coordinate
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:utm_northing
+    alias: utm_northing
+    owner: Location
+    domain_of:
+    - Location
+    range: decimal
+  location__utm_zone:
+    name: location__utm_zone
+    description: UTM zone number
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:utm_zone
+    alias: utm_zone
+    owner: Location
+    domain_of:
+    - Location
+    range: integer
+  location__active_periods:
+    name: location__active_periods
+    description: Time periods when location was active
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:active_periods
+    alias: active_periods
+    owner: Location
+    domain_of:
+    - Location
+    range: TimePeriod
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  timePeriod__start_date:
+    name: timePeriod__start_date
+    description: Start date of the period
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:startDate
+    slot_uri: schema:startDate
+    alias: start_date
+    owner: TimePeriod
+    domain_of:
+    - TimePeriod
+    range: date
+    required: true
+  timePeriod__end_date:
+    name: timePeriod__end_date
+    description: End date of the period (null if ongoing)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:endDate
+    slot_uri: schema:endDate
+    alias: end_date
+    owner: TimePeriod
+    domain_of:
+    - TimePeriod
+    range: date
+  geoCoordinates__latitude:
+    name: geoCoordinates__latitude
+    description: Latitude in decimal degrees
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:lat
+    slot_uri: wgs84:lat
+    alias: latitude
+    owner: GeoCoordinates
+    domain_of:
+    - GeoCoordinates
+    range: decimal
+  geoCoordinates__longitude:
+    name: geoCoordinates__longitude
+    description: Longitude in decimal degrees
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - wgs84:long
+    slot_uri: wgs84:long
+    alias: longitude
+    owner: GeoCoordinates
+    domain_of:
+    - GeoCoordinates
+    range: decimal
+  geoCoordinates__elevation:
+    name: geoCoordinates__elevation
+    description: Elevation in meters
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:elevation
+    alias: elevation
+    owner: GeoCoordinates
+    domain_of:
+    - GeoCoordinates
+    range: decimal
+    unit:
+      ucum_code: m
+  dataProduct__product_code:
+    name: dataProduct__product_code
+    description: Unique product code (e.g., DP1.00001.001)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: product_code
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: ProductCode
+    required: true
+  dataProduct__product_name:
+    name: dataProduct__product_name
+    description: Human-readable product name
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    alias: product_name
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: string
+    required: true
+  dataProduct__product_description:
+    name: dataProduct__product_description
+    description: Brief description of the product
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:description
+    slot_uri: schema:description
+    alias: product_description
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: string
+  dataProduct__product_abstract:
+    name: dataProduct__product_abstract
+    description: Detailed abstract describing the product
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:product_abstract
+    alias: product_abstract
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: string
+  dataProduct__product_status:
+    name: dataProduct__product_status
+    description: Current status of the product
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:product_status
+    alias: product_status
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: ProductStatusEnum
+  dataProduct__product_category:
+    name: dataProduct__product_category
+    description: Processing level category
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:product_category
+    alias: product_category
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: ProductCategoryEnum
+  dataProduct__product_has_expanded:
+    name: dataProduct__product_has_expanded
+    description: Whether expanded package is available
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:product_has_expanded
+    alias: product_has_expanded
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: boolean
+  dataProduct__science_team:
+    name: dataProduct__science_team
+    description: Science team responsible (3-letter abbreviation)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:science_team
+    alias: science_team
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: string
+  dataProduct__measurement_system:
+    name: dataProduct__measurement_system
+    description: Measurement system that collects this data
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:measurement_system
+    alias: measurement_system
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: MeasurementSystemEnum
+  dataProduct__sites:
+    name: dataProduct__sites
+    description: Sites where this product is available
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sites
+    alias: sites
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: SiteAvailability
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  dataProduct__releases:
+    name: dataProduct__releases
+    description: Releases containing this product
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:releases
+    alias: releases
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: Release
+    multivalued: true
+    inlined: false
+  dataProduct__specifications:
+    name: dataProduct__specifications
+    description: Associated protocol and specification documents
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:specifications
+    alias: specifications
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: ProductSpecification
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  dataProduct__change_logs:
+    name: dataProduct__change_logs
+    description: Issues and changes affecting the data
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:change_logs
+    alias: change_logs
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: ChangeLogEntry
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  dataProduct__keywords:
+    name: dataProduct__keywords
+    description: Keywords describing the product
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:keywords
+    slot_uri: schema:keywords
+    alias: keywords
+    owner: DataProduct
+    domain_of:
+    - DataProduct
+    range: string
+    multivalued: true
+  siteAvailability__site:
+    name: siteAvailability__site
+    description: Site where data is available
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:site
+    alias: site
+    owner: SiteAvailability
+    domain_of:
+    - SiteAvailability
+    range: Site
+    required: true
+    inlined: false
+  siteAvailability__available_months:
+    name: siteAvailability__available_months
+    description: Months when data is available (YYYY-MM format)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:available_months
+    alias: available_months
+    owner: SiteAvailability
+    domain_of:
+    - SiteAvailability
+    range: YearMonth
+    multivalued: true
+  siteAvailability__data_url:
+    name: siteAvailability__data_url
+    description: URL to access the data
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:url
+    slot_uri: schema:url
+    alias: data_url
+    owner: SiteAvailability
+    domain_of:
+    - SiteAvailability
+    range: uri
+  productSpecification__spec_id:
+    name: productSpecification__spec_id
+    description: Unique specification identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:spec_id
+    identifier: true
+    alias: spec_id
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: string
+    required: true
+  productSpecification__spec_description:
+    name: productSpecification__spec_description
+    description: Description of the specification
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:spec_description
+    alias: spec_description
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: string
+  productSpecification__spec_type:
+    name: productSpecification__spec_type
+    description: Type of specification (protocol, user guide, etc.)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:spec_type
+    alias: spec_type
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: string
+  productSpecification__file_name:
+    name: productSpecification__file_name
+    description: Name of the specification file
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:file_name
+    alias: file_name
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: string
+  productSpecification__file_size:
+    name: productSpecification__file_size
+    description: File size in bytes
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:file_size
+    alias: file_size
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: integer
+  productSpecification__mime_type:
+    name: productSpecification__mime_type
+    description: MIME type of the file
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:mime_type
+    alias: mime_type
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: string
+  productSpecification__url:
+    name: productSpecification__url
+    description: URL to download the specification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:url
+    slot_uri: schema:url
+    alias: url
+    owner: ProductSpecification
+    domain_of:
+    - ProductSpecification
+    range: uri
+  changeLogEntry__issue_id:
+    name: changeLogEntry__issue_id
+    description: Unique issue identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:issue_id
+    identifier: true
+    alias: issue_id
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: string
+    required: true
+  changeLogEntry__parent_issue_id:
+    name: changeLogEntry__parent_issue_id
+    description: Parent issue ID if this is a sub-issue
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:parent_issue_id
+    alias: parent_issue_id
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: string
+  changeLogEntry__issue:
+    name: changeLogEntry__issue
+    description: Description of the issue
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:issue
+    alias: issue
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: string
+    required: true
+  changeLogEntry__resolution:
+    name: changeLogEntry__resolution
+    description: How the issue was resolved
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:resolution
+    alias: resolution
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: string
+  changeLogEntry__date_range_start:
+    name: changeLogEntry__date_range_start
+    description: Start of affected date range
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:startDate
+    slot_uri: schema:startDate
+    alias: date_range_start
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: date
+  changeLogEntry__date_range_end:
+    name: changeLogEntry__date_range_end
+    description: End of affected date range
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:endDate
+    slot_uri: schema:endDate
+    alias: date_range_end
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: date
+  changeLogEntry__locations_affected:
+    name: changeLogEntry__locations_affected
+    description: Locations affected by this issue
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:locations_affected
+    alias: locations_affected
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: Location
+    multivalued: true
+    inlined: false
+  changeLogEntry__created_date:
+    name: changeLogEntry__created_date
+    description: When the issue was logged
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:created_date
+    alias: created_date
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: datetime
+  changeLogEntry__resolved_date:
+    name: changeLogEntry__resolved_date
+    description: When the issue was resolved
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:resolved_date
+    alias: resolved_date
+    owner: ChangeLogEntry
+    domain_of:
+    - ChangeLogEntry
+    range: datetime
+  release__release_tag:
+    name: release__release_tag
+    description: Release identifier (e.g., RELEASE-2025)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: release_tag
+    owner: Release
+    domain_of:
+    - Release
+    range: string
+    required: true
+  release__uuid:
+    name: release__uuid
+    description: Unique UUID for the release
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:uuid
+    alias: uuid
+    owner: Release
+    domain_of:
+    - Release
+    range: string
+  release__generation_date:
+    name: release__generation_date
+    description: Date the release was generated
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:datePublished
+    slot_uri: schema:datePublished
+    alias: generation_date
+    owner: Release
+    domain_of:
+    - Release
+    range: datetime
+  release__doi:
+    name: release__doi
+    description: Digital Object Identifier for citation
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    alias: doi
+    owner: Release
+    domain_of:
+    - Release
+    range: string
+  release__data_products:
+    name: release__data_products
+    description: Data products included in this release
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_products
+    alias: data_products
+    owner: Release
+    domain_of:
+    - Release
+    range: DataProduct
+    multivalued: true
+    inlined: false
+  release__artifacts:
+    name: release__artifacts
+    description: Downloadable files associated with release
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:artifacts
+    alias: artifacts
+    owner: Release
+    domain_of:
+    - Release
+    range: ReleaseArtifact
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  release__description:
+    name: release__description
+    description: Description of the release
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:description
+    slot_uri: schema:description
+    alias: description
+    owner: Release
+    domain_of:
+    - Release
+    range: string
+  releaseArtifact__name:
+    name: releaseArtifact__name
+    description: File name
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    alias: name
+    owner: ReleaseArtifact
+    domain_of:
+    - ReleaseArtifact
+    range: string
+    required: true
+  releaseArtifact__artifact_type:
+    name: releaseArtifact__artifact_type
+    description: Type of artifact
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:artifact_type
+    alias: artifact_type
+    owner: ReleaseArtifact
+    domain_of:
+    - ReleaseArtifact
+    range: string
+  releaseArtifact__file_size:
+    name: releaseArtifact__file_size
+    description: File size in bytes
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:file_size
+    alias: file_size
+    owner: ReleaseArtifact
+    domain_of:
+    - ReleaseArtifact
+    range: integer
+  releaseArtifact__md5_checksum:
+    name: releaseArtifact__md5_checksum
+    description: MD5 hash for integrity verification
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:md5_checksum
+    alias: md5_checksum
+    owner: ReleaseArtifact
+    domain_of:
+    - ReleaseArtifact
+    range: string
+  releaseArtifact__url:
+    name: releaseArtifact__url
+    description: Download URL
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:url
+    slot_uri: schema:url
+    alias: url
+    owner: ReleaseArtifact
+    domain_of:
+    - ReleaseArtifact
+    range: uri
+  dataFile__file_name:
+    name: dataFile__file_name
+    description: Name of the data file
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    identifier: true
+    alias: file_name
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: string
+    required: true
+  dataFile__data_product:
+    name: dataFile__data_product
+    description: Data product this file belongs to
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_product
+    alias: data_product
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: DataProduct
+    required: true
+    inlined: false
+  dataFile__site:
+    name: dataFile__site
+    description: Site the data was collected at
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:site
+    alias: site
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: Site
+    required: true
+    inlined: false
+  dataFile__year_month:
+    name: dataFile__year_month
+    description: Month of data collection (YYYY-MM)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:year_month
+    alias: year_month
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: YearMonth
+    required: true
+  dataFile__release:
+    name: dataFile__release
+    description: Release this file is part of
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:release
+    alias: release
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: Release
+    inlined: false
+  dataFile__file_size:
+    name: dataFile__file_size
+    description: File size in bytes
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:file_size
+    alias: file_size
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: integer
+  dataFile__url:
+    name: dataFile__url
+    description: Download URL (may expire)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:url
+    slot_uri: schema:url
+    alias: url
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: uri
+  dataFile__md5_checksum:
+    name: dataFile__md5_checksum
+    description: MD5 hash for integrity verification
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:md5_checksum
+    alias: md5_checksum
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: string
+  dataFile__crc32_checksum:
+    name: dataFile__crc32_checksum
+    description: CRC32 checksum
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:crc32_checksum
+    alias: crc32_checksum
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: string
+  dataFile__crc32c_checksum:
+    name: dataFile__crc32c_checksum
+    description: CRC32C checksum
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:crc32c_checksum
+    alias: crc32c_checksum
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: string
+  dataFile__package_type:
+    name: dataFile__package_type
+    description: Package type (basic or expanded)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:package_type
+    alias: package_type
+    owner: DataFile
+    domain_of:
+    - DataFile
+    range: string
+  sample__sample_uuid:
+    name: sample__sample_uuid
+    description: Unique UUID for the sample
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:materialSampleID
+    slot_uri: dwc:materialSampleID
+    identifier: true
+    alias: sample_uuid
+    owner: Sample
+    domain_of:
+    - Sample
+    range: string
+    required: true
+  sample__sample_tag:
+    name: sample__sample_tag
+    description: Sample tag identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sample_tag
+    alias: sample_tag
+    owner: Sample
+    domain_of:
+    - Sample
+    range: string
+  sample__sample_class:
+    name: sample__sample_class
+    description: Sample class (ingest table + ID field)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sample_class
+    alias: sample_class
+    owner: Sample
+    domain_of:
+    - Sample
+    range: string
+  sample__barcode:
+    name: sample__barcode
+    description: Sample barcode
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:barcode
+    alias: barcode
+    owner: Sample
+    domain_of:
+    - Sample
+    range: string
+  sample__archive_guid:
+    name: sample__archive_guid
+    description: Globally unique archive identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:archive_guid
+    alias: archive_guid
+    owner: Sample
+    domain_of:
+    - Sample
+    range: string
+  sample__site:
+    name: sample__site
+    description: Site where sample was collected
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:locationID
+    slot_uri: dwc:locationID
+    alias: site
+    owner: Sample
+    domain_of:
+    - Sample
+    range: Site
+    inlined: false
+  sample__location:
+    name: sample__location
+    description: Specific location where sample was collected
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:location
+    alias: location
+    owner: Sample
+    domain_of:
+    - Sample
+    range: Location
+    inlined: false
+  sample__collection_date:
+    name: sample__collection_date
+    description: Date sample was collected
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:eventDate
+    slot_uri: dwc:eventDate
+    alias: collection_date
+    owner: Sample
+    domain_of:
+    - Sample
+    range: date
+  sample__taxon:
+    name: sample__taxon
+    description: Taxonomic identification of sample (if biological)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:taxonID
+    slot_uri: dwc:taxonID
+    alias: taxon
+    owner: Sample
+    domain_of:
+    - Sample
+    range: Taxon
+    inlined: false
+  sample__parent_samples:
+    name: sample__parent_samples
+    description: Parent sample(s) this was derived from
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:parent_samples
+    alias: parent_samples
+    owner: Sample
+    domain_of:
+    - Sample
+    range: Sample
+    multivalued: true
+    inlined: false
+  sample__child_samples:
+    name: sample__child_samples
+    description: Child samples derived from this sample
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:child_samples
+    alias: child_samples
+    owner: Sample
+    domain_of:
+    - Sample
+    range: Sample
+    multivalued: true
+    inlined: false
+  sample__data_product:
+    name: sample__data_product
+    description: Data product this sample is associated with
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_product
+    alias: data_product
+    owner: Sample
+    domain_of:
+    - Sample
+    range: DataProduct
+    inlined: false
+  sample__sample_events:
+    name: sample__sample_events
+    description: Custody and processing events
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sample_events
+    alias: sample_events
+    owner: Sample
+    domain_of:
+    - Sample
+    range: SampleEvent
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  sampleEvent__event_id:
+    name: sampleEvent__event_id
+    description: Unique event identifier
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:event_id
+    identifier: true
+    alias: event_id
+    owner: SampleEvent
+    domain_of:
+    - SampleEvent
+    range: string
+    required: true
+  sampleEvent__event_date:
+    name: sampleEvent__event_date
+    description: Date of the event
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:startDate
+    slot_uri: schema:startDate
+    alias: event_date
+    owner: SampleEvent
+    domain_of:
+    - SampleEvent
+    range: datetime
+  sampleEvent__ingest_table_name:
+    name: sampleEvent__ingest_table_name
+    description: Name of the data ingest table
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:ingest_table_name
+    alias: ingest_table_name
+    owner: SampleEvent
+    domain_of:
+    - SampleEvent
+    range: string
+  sampleEvent__field_entries:
+    name: sampleEvent__field_entries
+    description: Field name/value pairs from the event
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:field_entries
+    alias: field_entries
+    owner: SampleEvent
+    domain_of:
+    - SampleEvent
+    range: FieldEntry
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  fieldEntry__field_name:
+    name: fieldEntry__field_name
+    description: Name of the field
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:field_name
+    alias: field_name
+    owner: FieldEntry
+    domain_of:
+    - FieldEntry
+    range: string
+    required: true
+  fieldEntry__field_value:
+    name: fieldEntry__field_value
+    description: Value of the field
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:field_value
+    alias: field_value
+    owner: FieldEntry
+    domain_of:
+    - FieldEntry
+    range: string
+  taxon__taxon_id:
+    name: taxon__taxon_id
+    description: Unique taxon identifier
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:taxonID
+    slot_uri: dwc:taxonID
+    identifier: true
+    alias: taxon_id
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+    required: true
+  taxon__accepted_taxon_id:
+    name: taxon__accepted_taxon_id
+    description: ID of accepted taxon if this is a synonym
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:acceptedNameUsageID
+    slot_uri: dwc:acceptedNameUsageID
+    alias: accepted_taxon_id
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__taxon_type:
+    name: taxon__taxon_type
+    description: Major taxonomic grouping (BIRD, PLANT, etc.)
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:taxon_type
+    alias: taxon_type
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: TaxonTypeEnum
+    required: true
+  taxon__scientific_name:
+    name: taxon__scientific_name
+    description: Full scientific name
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:scientificName
+    slot_uri: dwc:scientificName
+    alias: scientific_name
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+    required: true
+  taxon__scientific_name_authorship:
+    name: taxon__scientific_name_authorship
+    description: Authorship of the scientific name
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:scientificNameAuthorship
+    slot_uri: dwc:scientificNameAuthorship
+    alias: scientific_name_authorship
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__vernacular_name:
+    name: taxon__vernacular_name
+    description: Common name
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:vernacularName
+    slot_uri: dwc:vernacularName
+    alias: vernacular_name
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__taxon_rank:
+    name: taxon__taxon_rank
+    description: Taxonomic rank (species, genus, etc.)
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:taxonRank
+    slot_uri: dwc:taxonRank
+    alias: taxon_rank
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__kingdom:
+    name: taxon__kingdom
+    description: Kingdom classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:kingdom
+    slot_uri: dwc:kingdom
+    alias: kingdom
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__phylum:
+    name: taxon__phylum
+    description: Phylum classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:phylum
+    slot_uri: dwc:phylum
+    alias: phylum
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__class_name:
+    name: taxon__class_name
+    description: Class classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:class
+    slot_uri: dwc:class
+    alias: class_name
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__order:
+    name: taxon__order
+    description: Order classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:order
+    slot_uri: dwc:order
+    alias: order
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__family:
+    name: taxon__family
+    description: Family classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:family
+    slot_uri: dwc:family
+    alias: family
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__genus:
+    name: taxon__genus
+    description: Genus classification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:genus
+    slot_uri: dwc:genus
+    alias: genus
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__species:
+    name: taxon__species
+    description: Species epithet
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:specificEpithet
+    slot_uri: dwc:specificEpithet
+    alias: species
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__subspecies:
+    name: taxon__subspecies
+    description: Subspecies epithet
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:infraspecificEpithet
+    slot_uri: dwc:infraspecificEpithet
+    alias: subspecies
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__gbif_rank:
+    name: taxon__gbif_rank
+    description: GBIF vocabulary rank for subspecific taxa
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:gbif_rank
+    alias: gbif_rank
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__native_status_code:
+    name: taxon__native_status_code
+    description: Native/introduced status codes by region
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:native_status_code
+    alias: native_status_code
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: string
+  taxon__update_date:
+    name: taxon__update_date
+    description: Date of last taxonomic update
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:modified
+    slot_uri: dcterms:modified
+    alias: update_date
+    owner: Taxon
+    domain_of:
+    - Taxon
+    range: date
+  observation__observation_id:
+    name: observation__observation_id
+    description: Unique observation identifier
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: observation_id
+    owner: Observation
+    domain_of:
+    - Observation
+    range: string
+    required: true
+  observation__site:
+    name: observation__site
+    description: Site where observation was made
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:locationID
+    slot_uri: dwc:locationID
+    alias: site
+    owner: Observation
+    domain_of:
+    - Observation
+    range: Site
+    required: true
+    inlined: false
+  observation__location:
+    name: observation__location
+    description: Specific location of observation
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:location
+    alias: location
+    owner: Observation
+    domain_of:
+    - Observation
+    range: Location
+    inlined: false
+  observation__data_product:
+    name: observation__data_product
+    description: Data product this observation belongs to
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_product
+    alias: data_product
+    owner: Observation
+    domain_of:
+    - Observation
+    range: DataProduct
+    required: true
+    inlined: false
+  observation__observation_datetime:
+    name: observation__observation_datetime
+    description: Date and time of observation
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:eventDate
+    slot_uri: dwc:eventDate
+    alias: observation_datetime
+    owner: Observation
+    domain_of:
+    - Observation
+    range: datetime
+    required: true
+  observation__release:
+    name: observation__release
+    description: Release this observation is from
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:release
+    alias: release
+    owner: Observation
+    domain_of:
+    - Observation
+    range: Release
+    inlined: false
+  biologicalObservation__taxon:
+    name: biologicalObservation__taxon
+    description: Taxonomic identification
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:taxonID
+    slot_uri: dwc:taxonID
+    alias: taxon
+    owner: BiologicalObservation
+    domain_of:
+    - BiologicalObservation
+    range: Taxon
+    inlined: false
+  biologicalObservation__individual_count:
+    name: biologicalObservation__individual_count
+    description: Number of individuals observed
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:individualCount
+    slot_uri: dwc:individualCount
+    alias: individual_count
+    owner: BiologicalObservation
+    domain_of:
+    - BiologicalObservation
+    range: integer
+  biologicalObservation__occurrence_status:
+    name: biologicalObservation__occurrence_status
+    description: Presence/absence status
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:occurrenceStatus
+    slot_uri: dwc:occurrenceStatus
+    alias: occurrence_status
+    owner: BiologicalObservation
+    domain_of:
+    - BiologicalObservation
+    range: string
+  biologicalObservation__sample:
+    name: biologicalObservation__sample
+    description: Associated sample if collected
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sample
+    alias: sample
+    owner: BiologicalObservation
+    domain_of:
+    - BiologicalObservation
+    range: Sample
+    inlined: false
+  environmentalObservation__measured_property:
+    name: environmentalObservation__measured_property
+    description: Property being measured
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:measured_property
+    alias: measured_property
+    owner: EnvironmentalObservation
+    domain_of:
+    - EnvironmentalObservation
+    range: string
+    required: true
+  environmentalObservation__measurement_value:
+    name: environmentalObservation__measurement_value
+    description: Numeric value of measurement
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:measurement_value
+    alias: measurement_value
+    owner: EnvironmentalObservation
+    domain_of:
+    - EnvironmentalObservation
+    range: decimal
+  environmentalObservation__measurement_unit:
+    name: environmentalObservation__measurement_unit
+    description: Unit of measurement
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:measurement_unit
+    alias: measurement_unit
+    owner: EnvironmentalObservation
+    domain_of:
+    - EnvironmentalObservation
+    range: string
+  environmentalObservation__quality_flag:
+    name: environmentalObservation__quality_flag
+    description: Data quality flag
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:quality_flag
+    alias: quality_flag
+    owner: EnvironmentalObservation
+    domain_of:
+    - EnvironmentalObservation
+    range: string
+  environmentalObservation__sensor_location:
+    name: environmentalObservation__sensor_location
+    description: Location of the sensor
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:sensor_location
+    alias: sensor_location
+    owner: EnvironmentalObservation
+    domain_of:
+    - EnvironmentalObservation
+    range: Location
+    inlined: false
+  biorepositoryCollection__collection_code:
+    name: biorepositoryCollection__collection_code
+    description: Unique collection code
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dcterms:identifier
+    slot_uri: dcterms:identifier
+    identifier: true
+    alias: collection_code
+    owner: BiorepositoryCollection
+    domain_of:
+    - BiorepositoryCollection
+    range: string
+    required: true
+  biorepositoryCollection__collection_name:
+    name: biorepositoryCollection__collection_name
+    description: Name of the collection
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:name
+    slot_uri: schema:name
+    alias: collection_name
+    owner: BiorepositoryCollection
+    domain_of:
+    - BiorepositoryCollection
+    range: string
+    required: true
+  biorepositoryCollection__collection_url:
+    name: biorepositoryCollection__collection_url
+    description: URL for the collection
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:url
+    slot_uri: schema:url
+    alias: collection_url
+    owner: BiorepositoryCollection
+    domain_of:
+    - BiorepositoryCollection
+    range: uri
+  biorepositoryCollection__data_products:
+    name: biorepositoryCollection__data_products
+    description: Data products associated with this collection
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:data_products
+    alias: data_products
+    owner: BiorepositoryCollection
+    domain_of:
+    - BiorepositoryCollection
+    range: DataProduct
+    multivalued: true
+    inlined: false
+  biorepositoryCollection__samples:
+    name: biorepositoryCollection__samples
+    description: Samples in this collection
+    from_schema: https://w3id.org/neon-schema
+    slot_uri: neon:samples
+    alias: samples
+    owner: BiorepositoryCollection
+    domain_of:
+    - BiorepositoryCollection
+    range: Sample
+    multivalued: true
+    inlined: false
+classes:
+  NeonDataset:
+    name: NeonDataset
+    definition_uri: https://w3id.org/neon-schema/NeonDataset
+    description: Container for a collection of NEON data entities
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - neonDataset__domains
+    - neonDataset__sites
+    - neonDataset__locations
+    - neonDataset__data_products
+    - neonDataset__releases
+    - neonDataset__taxa
+    - neonDataset__samples
+    attributes:
+      domains:
+        name: domains
+        description: Collection of NEON domains
+        range: Domain
+        multivalued: true
+        inlined_as_list: true
+      sites:
+        name: sites
+        description: Collection of NEON field sites
+        range: Site
+        multivalued: true
+        inlined_as_list: true
+      locations:
+        name: locations
+        description: Collection of named locations
+        range: Location
+        multivalued: true
+        inlined_as_list: true
+      data_products:
+        name: data_products
+        description: Collection of data products
+        range: DataProduct
+        multivalued: true
+        inlined_as_list: true
+      releases:
+        name: releases
+        description: Collection of data releases
+        range: Release
+        multivalued: true
+        inlined_as_list: true
+      taxa:
+        name: taxa
+        description: Collection of taxonomic records
+        range: Taxon
+        multivalued: true
+        inlined_as_list: true
+      samples:
+        name: samples
+        description: Collection of physical samples
+        range: Sample
+        multivalued: true
+        inlined_as_list: true
+    class_uri: neon:NeonDataset
+    tree_root: true
+  Domain:
+    name: Domain
+    definition_uri: https://w3id.org/neon-schema/Domain
+    description: A NEON domain representing a distinct eco-climatic region. NEON divides
+      the US into 20 eco-climatic domains.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Place
+    slots:
+    - domain__domain_code
+    - domain__domain_name
+    - domain__description
+    - domain__sites
+    attributes:
+      domain_code:
+        name: domain_code
+        description: Unique domain identifier (D01-D20)
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: DomainCode
+      domain_name:
+        name: domain_name
+        description: Full name of the domain
+        slot_uri: schema:name
+        range: string
+        required: true
+      description:
+        name: description
+        description: Description of the domain's ecological characteristics
+        slot_uri: schema:description
+        range: string
+      sites:
+        name: sites
+        description: Sites within this domain
+        range: Site
+        multivalued: true
+        inlined: false
+    class_uri: schema:Place
+  Site:
+    name: Site
+    definition_uri: https://w3id.org/neon-schema/Site
+    description: A NEON field site where data collection occurs. Sites are either
+      CORE (representing key ecosystems) or GRADIENT (capturing environmental gradients).
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Place
+    slots:
+    - site__site_code
+    - site__site_name
+    - site__site_description
+    - site__site_type
+    - site__domain
+    - site__latitude
+    - site__longitude
+    - site__elevation
+    - site__state_code
+    - site__state_name
+    - site__deims_id
+    - site__available_data_products
+    - site__locations
+    attributes:
+      site_code:
+        name: site_code
+        description: Four-character unique site identifier
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: SiteCode
+      site_name:
+        name: site_name
+        description: Full name of the site
+        slot_uri: schema:name
+        range: string
+        required: true
+      site_description:
+        name: site_description
+        description: Abbreviated site description
+        slot_uri: schema:description
+        range: string
+      site_type:
+        name: site_type
+        description: Whether site is CORE or GRADIENT
+        range: SiteTypeEnum
+        required: true
+      domain:
+        name: domain
+        description: Domain this site belongs to
+        slot_uri: schema:containedInPlace
+        range: Domain
+        required: true
+        inlined: false
+      latitude:
+        name: latitude
+        description: Site latitude in decimal degrees (WGS84)
+        slot_uri: wgs84:lat
+        range: decimal
+      longitude:
+        name: longitude
+        description: Site longitude in decimal degrees (WGS84)
+        slot_uri: wgs84:long
+        range: decimal
+      elevation:
+        name: elevation
+        description: Site elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+      state_code:
+        name: state_code
+        description: Two-letter US state code
+        range: string
+      state_name:
+        name: state_name
+        description: Full state name
+        range: string
+      deims_id:
+        name: deims_id
+        description: DEIMS-SDR registry identifier
+        range: string
+      available_data_products:
+        name: available_data_products
+        description: Data products available at this site
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      locations:
+        name: locations
+        description: Named locations within this site
+        range: Location
+        multivalued: true
+        inlined: false
+    class_uri: schema:Place
+  Location:
+    name: Location
+    definition_uri: https://w3id.org/neon-schema/Location
+    description: A named location in NEON's hierarchical location system. Locations
+      range from domains to individual sensor positions.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Place
+    slots:
+    - location__location_name
+    - location__location_description
+    - location__location_type
+    - location__site
+    - location__parent_location
+    - location__child_locations
+    - location__latitude
+    - location__longitude
+    - location__elevation
+    - location__utm_easting
+    - location__utm_northing
+    - location__utm_zone
+    - location__active_periods
+    attributes:
+      location_name:
+        name: location_name
+        description: Unique location name identifier
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: string
+      location_description:
+        name: location_description
+        description: Description of the location
+        slot_uri: schema:description
+        range: string
+      location_type:
+        name: location_type
+        description: Type of location in hierarchy
+        range: LocationTypeEnum
+      site:
+        name: site
+        description: Site this location belongs to
+        slot_uri: schema:containedInPlace
+        range: Site
+        inlined: false
+      parent_location:
+        name: parent_location
+        description: Parent location in hierarchy
+        range: Location
+        inlined: false
+      child_locations:
+        name: child_locations
+        description: Child locations in hierarchy
+        range: Location
+        multivalued: true
+        inlined: false
+      latitude:
+        name: latitude
+        description: Location latitude in decimal degrees (WGS84)
+        slot_uri: wgs84:lat
+        range: decimal
+      longitude:
+        name: longitude
+        description: Location longitude in decimal degrees (WGS84)
+        slot_uri: wgs84:long
+        range: decimal
+      elevation:
+        name: elevation
+        description: Location elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+      utm_easting:
+        name: utm_easting
+        description: UTM easting coordinate
+        range: decimal
+      utm_northing:
+        name: utm_northing
+        description: UTM northing coordinate
+        range: decimal
+      utm_zone:
+        name: utm_zone
+        description: UTM zone number
+        range: integer
+      active_periods:
+        name: active_periods
+        description: Time periods when location was active
+        range: TimePeriod
+        multivalued: true
+        inlined_as_list: true
+    class_uri: schema:Place
+  TimePeriod:
+    name: TimePeriod
+    definition_uri: https://w3id.org/neon-schema/TimePeriod
+    description: A time period with start and optional end date
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Schedule
+    slots:
+    - timePeriod__start_date
+    - timePeriod__end_date
+    attributes:
+      start_date:
+        name: start_date
+        description: Start date of the period
+        slot_uri: schema:startDate
+        range: date
+        required: true
+      end_date:
+        name: end_date
+        description: End date of the period (null if ongoing)
+        slot_uri: schema:endDate
+        range: date
+    class_uri: schema:Schedule
+  GeoCoordinates:
+    name: GeoCoordinates
+    definition_uri: https://w3id.org/neon-schema/GeoCoordinates
+    description: Geographic coordinates
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:GeoCoordinates
+    slots:
+    - geoCoordinates__latitude
+    - geoCoordinates__longitude
+    - geoCoordinates__elevation
+    attributes:
+      latitude:
+        name: latitude
+        description: Latitude in decimal degrees
+        slot_uri: wgs84:lat
+        range: decimal
+      longitude:
+        name: longitude
+        description: Longitude in decimal degrees
+        slot_uri: wgs84:long
+        range: decimal
+      elevation:
+        name: elevation
+        description: Elevation in meters
+        range: decimal
+        unit:
+          ucum_code: m
+    class_uri: schema:GeoCoordinates
+  DataProduct:
+    name: DataProduct
+    definition_uri: https://w3id.org/neon-schema/DataProduct
+    description: A NEON data product representing a specific type of ecological measurement
+      or observation. Products are identified by codes like DP1.00001.001.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Dataset
+    slots:
+    - dataProduct__product_code
+    - dataProduct__product_name
+    - dataProduct__product_description
+    - dataProduct__product_abstract
+    - dataProduct__product_status
+    - dataProduct__product_category
+    - dataProduct__product_has_expanded
+    - dataProduct__science_team
+    - dataProduct__measurement_system
+    - dataProduct__sites
+    - dataProduct__releases
+    - dataProduct__specifications
+    - dataProduct__change_logs
+    - dataProduct__keywords
+    attributes:
+      product_code:
+        name: product_code
+        description: Unique product code (e.g., DP1.00001.001)
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: ProductCode
+      product_name:
+        name: product_name
+        description: Human-readable product name
+        slot_uri: schema:name
+        range: string
+        required: true
+      product_description:
+        name: product_description
+        description: Brief description of the product
+        slot_uri: schema:description
+        range: string
+      product_abstract:
+        name: product_abstract
+        description: Detailed abstract describing the product
+        range: string
+      product_status:
+        name: product_status
+        description: Current status of the product
+        range: ProductStatusEnum
+      product_category:
+        name: product_category
+        description: Processing level category
+        range: ProductCategoryEnum
+      product_has_expanded:
+        name: product_has_expanded
+        description: Whether expanded package is available
+        range: boolean
+      science_team:
+        name: science_team
+        description: Science team responsible (3-letter abbreviation)
+        range: string
+      measurement_system:
+        name: measurement_system
+        description: Measurement system that collects this data
+        range: MeasurementSystemEnum
+      sites:
+        name: sites
+        description: Sites where this product is available
+        range: SiteAvailability
+        multivalued: true
+        inlined_as_list: true
+      releases:
+        name: releases
+        description: Releases containing this product
+        range: Release
+        multivalued: true
+        inlined: false
+      specifications:
+        name: specifications
+        description: Associated protocol and specification documents
+        range: ProductSpecification
+        multivalued: true
+        inlined_as_list: true
+      change_logs:
+        name: change_logs
+        description: Issues and changes affecting the data
+        range: ChangeLogEntry
+        multivalued: true
+        inlined_as_list: true
+      keywords:
+        name: keywords
+        description: Keywords describing the product
+        slot_uri: schema:keywords
+        range: string
+        multivalued: true
+    class_uri: schema:Dataset
+  SiteAvailability:
+    name: SiteAvailability
+    definition_uri: https://w3id.org/neon-schema/SiteAvailability
+    description: Availability of a data product at a specific site
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - siteAvailability__site
+    - siteAvailability__available_months
+    - siteAvailability__data_url
+    attributes:
+      site:
+        name: site
+        description: Site where data is available
+        range: Site
+        required: true
+        inlined: false
+      available_months:
+        name: available_months
+        description: Months when data is available (YYYY-MM format)
+        range: YearMonth
+        multivalued: true
+      data_url:
+        name: data_url
+        description: URL to access the data
+        slot_uri: schema:url
+        range: uri
+    class_uri: neon:SiteAvailability
+  ProductSpecification:
+    name: ProductSpecification
+    definition_uri: https://w3id.org/neon-schema/ProductSpecification
+    description: A specification document associated with a data product
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - productSpecification__spec_id
+    - productSpecification__spec_description
+    - productSpecification__spec_type
+    - productSpecification__file_name
+    - productSpecification__file_size
+    - productSpecification__mime_type
+    - productSpecification__url
+    attributes:
+      spec_id:
+        name: spec_id
+        description: Unique specification identifier
+        identifier: true
+        range: string
+      spec_description:
+        name: spec_description
+        description: Description of the specification
+        range: string
+      spec_type:
+        name: spec_type
+        description: Type of specification (protocol, user guide, etc.)
+        range: string
+      file_name:
+        name: file_name
+        description: Name of the specification file
+        range: string
+      file_size:
+        name: file_size
+        description: File size in bytes
+        range: integer
+      mime_type:
+        name: mime_type
+        description: MIME type of the file
+        range: string
+      url:
+        name: url
+        description: URL to download the specification
+        slot_uri: schema:url
+        range: uri
+    class_uri: neon:ProductSpecification
+  ChangeLogEntry:
+    name: ChangeLogEntry
+    definition_uri: https://w3id.org/neon-schema/ChangeLogEntry
+    description: A change log entry documenting issues affecting data
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - changeLogEntry__issue_id
+    - changeLogEntry__parent_issue_id
+    - changeLogEntry__issue
+    - changeLogEntry__resolution
+    - changeLogEntry__date_range_start
+    - changeLogEntry__date_range_end
+    - changeLogEntry__locations_affected
+    - changeLogEntry__created_date
+    - changeLogEntry__resolved_date
+    attributes:
+      issue_id:
+        name: issue_id
+        description: Unique issue identifier
+        identifier: true
+        range: string
+      parent_issue_id:
+        name: parent_issue_id
+        description: Parent issue ID if this is a sub-issue
+        range: string
+      issue:
+        name: issue
+        description: Description of the issue
+        range: string
+        required: true
+      resolution:
+        name: resolution
+        description: How the issue was resolved
+        range: string
+      date_range_start:
+        name: date_range_start
+        description: Start of affected date range
+        slot_uri: schema:startDate
+        range: date
+      date_range_end:
+        name: date_range_end
+        description: End of affected date range
+        slot_uri: schema:endDate
+        range: date
+      locations_affected:
+        name: locations_affected
+        description: Locations affected by this issue
+        range: Location
+        multivalued: true
+        inlined: false
+      created_date:
+        name: created_date
+        description: When the issue was logged
+        range: datetime
+      resolved_date:
+        name: resolved_date
+        description: When the issue was resolved
+        range: datetime
+    class_uri: neon:ChangeLogEntry
+  Release:
+    name: Release
+    definition_uri: https://w3id.org/neon-schema/Release
+    description: A NEON data release - a static, citable collection of data files
+      with a DOI for reproducible research.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:DataCatalog
+    slots:
+    - release__release_tag
+    - release__uuid
+    - release__generation_date
+    - release__doi
+    - release__data_products
+    - release__artifacts
+    - release__description
+    attributes:
+      release_tag:
+        name: release_tag
+        description: Release identifier (e.g., RELEASE-2025)
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: string
+      uuid:
+        name: uuid
+        description: Unique UUID for the release
+        range: string
+      generation_date:
+        name: generation_date
+        description: Date the release was generated
+        slot_uri: schema:datePublished
+        range: datetime
+      doi:
+        name: doi
+        description: Digital Object Identifier for citation
+        slot_uri: dcterms:identifier
+        range: string
+      data_products:
+        name: data_products
+        description: Data products included in this release
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      artifacts:
+        name: artifacts
+        description: Downloadable files associated with release
+        range: ReleaseArtifact
+        multivalued: true
+        inlined_as_list: true
+      description:
+        name: description
+        description: Description of the release
+        slot_uri: schema:description
+        range: string
+    class_uri: schema:DataCatalog
+  ReleaseArtifact:
+    name: ReleaseArtifact
+    definition_uri: https://w3id.org/neon-schema/ReleaseArtifact
+    description: A downloadable artifact (file) in a release
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - releaseArtifact__name
+    - releaseArtifact__artifact_type
+    - releaseArtifact__file_size
+    - releaseArtifact__md5_checksum
+    - releaseArtifact__url
+    attributes:
+      name:
+        name: name
+        description: File name
+        slot_uri: schema:name
+        range: string
+        required: true
+      artifact_type:
+        name: artifact_type
+        description: Type of artifact
+        range: string
+      file_size:
+        name: file_size
+        description: File size in bytes
+        range: integer
+      md5_checksum:
+        name: md5_checksum
+        description: MD5 hash for integrity verification
+        range: string
+      url:
+        name: url
+        description: Download URL
+        slot_uri: schema:url
+        range: uri
+    class_uri: neon:ReleaseArtifact
+  DataFile:
+    name: DataFile
+    definition_uri: https://w3id.org/neon-schema/DataFile
+    description: An individual data file within a data product
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:DataDownload
+    slots:
+    - dataFile__file_name
+    - dataFile__data_product
+    - dataFile__site
+    - dataFile__year_month
+    - dataFile__release
+    - dataFile__file_size
+    - dataFile__url
+    - dataFile__md5_checksum
+    - dataFile__crc32_checksum
+    - dataFile__crc32c_checksum
+    - dataFile__package_type
+    attributes:
+      file_name:
+        name: file_name
+        description: Name of the data file
+        slot_uri: schema:name
+        identifier: true
+        range: string
+      data_product:
+        name: data_product
+        description: Data product this file belongs to
+        range: DataProduct
+        required: true
+        inlined: false
+      site:
+        name: site
+        description: Site the data was collected at
+        range: Site
+        required: true
+        inlined: false
+      year_month:
+        name: year_month
+        description: Month of data collection (YYYY-MM)
+        range: YearMonth
+        required: true
+      release:
+        name: release
+        description: Release this file is part of
+        range: Release
+        inlined: false
+      file_size:
+        name: file_size
+        description: File size in bytes
+        range: integer
+      url:
+        name: url
+        description: Download URL (may expire)
+        slot_uri: schema:url
+        range: uri
+      md5_checksum:
+        name: md5_checksum
+        description: MD5 hash for integrity verification
+        range: string
+      crc32_checksum:
+        name: crc32_checksum
+        description: CRC32 checksum
+        range: string
+      crc32c_checksum:
+        name: crc32c_checksum
+        description: CRC32C checksum
+        range: string
+      package_type:
+        name: package_type
+        description: Package type (basic or expanded)
+        range: string
+    class_uri: schema:DataDownload
+  Sample:
+    name: Sample
+    definition_uri: https://w3id.org/neon-schema/Sample
+    description: A physical sample collected by NEON, tracked through the Sample Management
+      System (SMS).
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:MaterialSample
+    slots:
+    - sample__sample_uuid
+    - sample__sample_tag
+    - sample__sample_class
+    - sample__barcode
+    - sample__archive_guid
+    - sample__site
+    - sample__location
+    - sample__collection_date
+    - sample__taxon
+    - sample__parent_samples
+    - sample__child_samples
+    - sample__data_product
+    - sample__sample_events
+    attributes:
+      sample_uuid:
+        name: sample_uuid
+        description: Unique UUID for the sample
+        slot_uri: dwc:materialSampleID
+        identifier: true
+        range: string
+      sample_tag:
+        name: sample_tag
+        description: Sample tag identifier
+        range: string
+      sample_class:
+        name: sample_class
+        description: Sample class (ingest table + ID field)
+        range: string
+      barcode:
+        name: barcode
+        description: Sample barcode
+        range: string
+      archive_guid:
+        name: archive_guid
+        description: Globally unique archive identifier
+        range: string
+      site:
+        name: site
+        description: Site where sample was collected
+        slot_uri: dwc:locationID
+        range: Site
+        inlined: false
+      location:
+        name: location
+        description: Specific location where sample was collected
+        range: Location
+        inlined: false
+      collection_date:
+        name: collection_date
+        description: Date sample was collected
+        slot_uri: dwc:eventDate
+        range: date
+      taxon:
+        name: taxon
+        description: Taxonomic identification of sample (if biological)
+        slot_uri: dwc:taxonID
+        range: Taxon
+        inlined: false
+      parent_samples:
+        name: parent_samples
+        description: Parent sample(s) this was derived from
+        range: Sample
+        multivalued: true
+        inlined: false
+      child_samples:
+        name: child_samples
+        description: Child samples derived from this sample
+        range: Sample
+        multivalued: true
+        inlined: false
+      data_product:
+        name: data_product
+        description: Data product this sample is associated with
+        range: DataProduct
+        inlined: false
+      sample_events:
+        name: sample_events
+        description: Custody and processing events
+        range: SampleEvent
+        multivalued: true
+        inlined_as_list: true
+    class_uri: dwc:MaterialSample
+  SampleEvent:
+    name: SampleEvent
+    definition_uri: https://w3id.org/neon-schema/SampleEvent
+    description: A custody or processing event for a sample
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - sampleEvent__event_id
+    - sampleEvent__event_date
+    - sampleEvent__ingest_table_name
+    - sampleEvent__field_entries
+    attributes:
+      event_id:
+        name: event_id
+        description: Unique event identifier
+        identifier: true
+        range: string
+      event_date:
+        name: event_date
+        description: Date of the event
+        slot_uri: schema:startDate
+        range: datetime
+      ingest_table_name:
+        name: ingest_table_name
+        description: Name of the data ingest table
+        range: string
+      field_entries:
+        name: field_entries
+        description: Field name/value pairs from the event
+        range: FieldEntry
+        multivalued: true
+        inlined_as_list: true
+    class_uri: neon:SampleEvent
+  FieldEntry:
+    name: FieldEntry
+    definition_uri: https://w3id.org/neon-schema/FieldEntry
+    description: A field name/value pair from a sample event
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - fieldEntry__field_name
+    - fieldEntry__field_value
+    attributes:
+      field_name:
+        name: field_name
+        description: Name of the field
+        range: string
+        required: true
+      field_value:
+        name: field_value
+        description: Value of the field
+        range: string
+    class_uri: neon:FieldEntry
+  Taxon:
+    name: Taxon
+    definition_uri: https://w3id.org/neon-schema/Taxon
+    description: A taxonomic record from NEON's taxon lists, following Darwin Core
+      standards. Taxa are compiled from published sources for field staff verification.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - dwc:Taxon
+    slots:
+    - taxon__taxon_id
+    - taxon__accepted_taxon_id
+    - taxon__taxon_type
+    - taxon__scientific_name
+    - taxon__scientific_name_authorship
+    - taxon__vernacular_name
+    - taxon__taxon_rank
+    - taxon__kingdom
+    - taxon__phylum
+    - taxon__class_name
+    - taxon__order
+    - taxon__family
+    - taxon__genus
+    - taxon__species
+    - taxon__subspecies
+    - taxon__gbif_rank
+    - taxon__native_status_code
+    - taxon__update_date
+    attributes:
+      taxon_id:
+        name: taxon_id
+        description: Unique taxon identifier
+        slot_uri: dwc:taxonID
+        identifier: true
+        range: string
+      accepted_taxon_id:
+        name: accepted_taxon_id
+        description: ID of accepted taxon if this is a synonym
+        slot_uri: dwc:acceptedNameUsageID
+        range: string
+      taxon_type:
+        name: taxon_type
+        description: Major taxonomic grouping (BIRD, PLANT, etc.)
+        range: TaxonTypeEnum
+        required: true
+      scientific_name:
+        name: scientific_name
+        description: Full scientific name
+        slot_uri: dwc:scientificName
+        range: string
+        required: true
+      scientific_name_authorship:
+        name: scientific_name_authorship
+        description: Authorship of the scientific name
+        slot_uri: dwc:scientificNameAuthorship
+        range: string
+      vernacular_name:
+        name: vernacular_name
+        description: Common name
+        slot_uri: dwc:vernacularName
+        range: string
+      taxon_rank:
+        name: taxon_rank
+        description: Taxonomic rank (species, genus, etc.)
+        slot_uri: dwc:taxonRank
+        range: string
+      kingdom:
+        name: kingdom
+        description: Kingdom classification
+        slot_uri: dwc:kingdom
+        range: string
+      phylum:
+        name: phylum
+        description: Phylum classification
+        slot_uri: dwc:phylum
+        range: string
+      class_name:
+        name: class_name
+        description: Class classification
+        slot_uri: dwc:class
+        range: string
+      order:
+        name: order
+        description: Order classification
+        slot_uri: dwc:order
+        range: string
+      family:
+        name: family
+        description: Family classification
+        slot_uri: dwc:family
+        range: string
+      genus:
+        name: genus
+        description: Genus classification
+        slot_uri: dwc:genus
+        range: string
+      species:
+        name: species
+        description: Species epithet
+        slot_uri: dwc:specificEpithet
+        range: string
+      subspecies:
+        name: subspecies
+        description: Subspecies epithet
+        slot_uri: dwc:infraspecificEpithet
+        range: string
+      gbif_rank:
+        name: gbif_rank
+        description: GBIF vocabulary rank for subspecific taxa
+        range: string
+      native_status_code:
+        name: native_status_code
+        description: Native/introduced status codes by region
+        range: string
+      update_date:
+        name: update_date
+        description: Date of last taxonomic update
+        slot_uri: dcterms:modified
+        range: date
+    class_uri: dwc:Taxon
+  Observation:
+    name: Observation
+    definition_uri: https://w3id.org/neon-schema/Observation
+    description: A generic observation or measurement record from NEON. This is a
+      base class for specific observation types.
+    from_schema: https://w3id.org/neon-schema
+    mappings:
+    - schema:Observation
+    slots:
+    - observation__observation_id
+    - observation__site
+    - observation__location
+    - observation__data_product
+    - observation__observation_datetime
+    - observation__release
+    attributes:
+      observation_id:
+        name: observation_id
+        description: Unique observation identifier
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: string
+      site:
+        name: site
+        description: Site where observation was made
+        slot_uri: dwc:locationID
+        range: Site
+        required: true
+        inlined: false
+      location:
+        name: location
+        description: Specific location of observation
+        range: Location
+        inlined: false
+      data_product:
+        name: data_product
+        description: Data product this observation belongs to
+        range: DataProduct
+        required: true
+        inlined: false
+      observation_datetime:
+        name: observation_datetime
+        description: Date and time of observation
+        slot_uri: dwc:eventDate
+        range: datetime
+        required: true
+      release:
+        name: release
+        description: Release this observation is from
+        range: Release
+        inlined: false
+    class_uri: schema:Observation
+  BiologicalObservation:
+    name: BiologicalObservation
+    definition_uri: https://w3id.org/neon-schema/BiologicalObservation
+    description: An observation of a biological organism
+    from_schema: https://w3id.org/neon-schema
+    is_a: Observation
+    slots:
+    - observation__observation_id
+    - observation__site
+    - observation__location
+    - observation__data_product
+    - observation__observation_datetime
+    - observation__release
+    - biologicalObservation__taxon
+    - biologicalObservation__individual_count
+    - biologicalObservation__occurrence_status
+    - biologicalObservation__sample
+    attributes:
+      taxon:
+        name: taxon
+        description: Taxonomic identification
+        slot_uri: dwc:taxonID
+        range: Taxon
+        inlined: false
+      individual_count:
+        name: individual_count
+        description: Number of individuals observed
+        slot_uri: dwc:individualCount
+        range: integer
+      occurrence_status:
+        name: occurrence_status
+        description: Presence/absence status
+        slot_uri: dwc:occurrenceStatus
+        range: string
+      sample:
+        name: sample
+        description: Associated sample if collected
+        range: Sample
+        inlined: false
+    class_uri: neon:BiologicalObservation
+  EnvironmentalObservation:
+    name: EnvironmentalObservation
+    definition_uri: https://w3id.org/neon-schema/EnvironmentalObservation
+    description: An environmental or instrumental measurement
+    from_schema: https://w3id.org/neon-schema
+    is_a: Observation
+    slots:
+    - observation__observation_id
+    - observation__site
+    - observation__location
+    - observation__data_product
+    - observation__observation_datetime
+    - observation__release
+    - environmentalObservation__measured_property
+    - environmentalObservation__measurement_value
+    - environmentalObservation__measurement_unit
+    - environmentalObservation__quality_flag
+    - environmentalObservation__sensor_location
+    attributes:
+      measured_property:
+        name: measured_property
+        description: Property being measured
+        range: string
+        required: true
+      measurement_value:
+        name: measurement_value
+        description: Numeric value of measurement
+        range: decimal
+      measurement_unit:
+        name: measurement_unit
+        description: Unit of measurement
+        range: string
+      quality_flag:
+        name: quality_flag
+        description: Data quality flag
+        range: string
+      sensor_location:
+        name: sensor_location
+        description: Location of the sensor
+        range: Location
+        inlined: false
+    class_uri: neon:EnvironmentalObservation
+  BiorepositoryCollection:
+    name: BiorepositoryCollection
+    definition_uri: https://w3id.org/neon-schema/BiorepositoryCollection
+    description: A collection of samples held in a biorepository
+    from_schema: https://w3id.org/neon-schema
+    slots:
+    - biorepositoryCollection__collection_code
+    - biorepositoryCollection__collection_name
+    - biorepositoryCollection__collection_url
+    - biorepositoryCollection__data_products
+    - biorepositoryCollection__samples
+    attributes:
+      collection_code:
+        name: collection_code
+        description: Unique collection code
+        slot_uri: dcterms:identifier
+        identifier: true
+        range: string
+      collection_name:
+        name: collection_name
+        description: Name of the collection
+        slot_uri: schema:name
+        range: string
+        required: true
+      collection_url:
+        name: collection_url
+        description: URL for the collection
+        slot_uri: schema:url
+        range: uri
+      data_products:
+        name: data_products
+        description: Data products associated with this collection
+        range: DataProduct
+        multivalued: true
+        inlined: false
+      samples:
+        name: samples
+        description: Samples in this collection
+        range: Sample
+        multivalued: true
+        inlined: false
+    class_uri: neon:BiorepositoryCollection
+metamodel_version: 1.7.0
+source_file: neon_schema.yaml
+source_file_date: '2026-03-06T16:18:35'
+source_file_size: 28274
+generation_date: '2026-03-06T16:18:45'
+
